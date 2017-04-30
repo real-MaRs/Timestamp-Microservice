@@ -4,10 +4,19 @@ const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(express.static('public'));
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
+app.post('/', urlencodedParser, (req, res) => {
+  res.redirect(`/${req.body.time}`);
+});
 
 //get call to return JSON that formats natural and unix date
-app.get('/dateValues/:date', (req, res, next) => {
+app.get('/:date', (req, res, next) => {
   const date = req.params.date;
 
   const dateFormattingOptions = {
@@ -32,4 +41,5 @@ app.get('/dateValues/:date', (req, res, next) => {
   });
 });
 
-app.listen(3000, () => console.log('listening to port 3000.'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Listening to port ${PORT}`));
